@@ -4,6 +4,7 @@ from datetime import timedelta, date
 def getToday(lat, lng):
     url = f"https://api.sunrise-sunset.org/v2?lat={lat}&lng={lng}"
     dataToday = requests.get(url)
+    dataToday.raise_for_status()
     jsonToday = dataToday.json()
     dayLengthToday = jsonToday["day_length"]
     return dayLengthToday
@@ -11,6 +12,7 @@ def getToday(lat, lng):
 def getDate(lat, lng, dateStr):
     url = f"https://api.sunrise-sunset.org/v2?lat={lat}&lng={lng}&date={dateStr}"
     dataDate = requests.get(url)
+    dataDate.raise_for_status()
     jsonDate = dataDate.json()
     dayLengthDate = jsonDate["day_length"]
     return dayLengthDate
