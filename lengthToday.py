@@ -19,6 +19,12 @@ def getDate(lat, lng, dateStr):
     dayLengthDate = jsonDate["day_length"]
     return dayLengthDate
 
+def getTemp(lat, lng):
+    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lng}&current=temperature_2m"
+    dataTemp = requests.get(url)
+    jsonTemp = dataTemp.json()
+    return jsonTemp["current"]["temperature_2m"]
+
 def convertSecToHHMMSS(secs):
     minutes, seconds = divmod(secs,60)
     hours, minutes = divmod(minutes,60)
@@ -26,7 +32,11 @@ def convertSecToHHMMSS(secs):
     
 
 def main():
-    lat, lng = 52.6446, 1.34646
+    #lat, lng = 52.6446, 1.34646
+    lat, lng = 51.2837,0
+
+    tempNow = getTemp(lat,lng)
+
     lengthToday = getToday(lat,lng)
     hToday, mToday, sToday = convertSecToHHMMSS(lengthToday)
 
@@ -57,31 +67,28 @@ def main():
         tDiffM, tDiffS = 0, 0
         tDiff = "same"
 
-    print(f"Today's day length: {hToday}h {mToday}m {sToday}s")
-    print(f"Today is {yDiffM}m {yDiffS}s {yDiff} than yesterday.")
-    print(f"Today is {tDiffM}m {tDiffS}s {tDiff} than tomorrow.")
+    # print(f"Today's day length: {hToday}h {mToday}m {sToday}s")
+    # print(f"Today is {yDiffM}m {yDiffS}s {yDiff} than yesterday.")
+    # print(f"Today is {tDiffM}m {tDiffS}s {tDiff} than tomorrow.")
 
     root = tk.Tk()
     root.title("Day Length Info")
-    root.geometry("200x200")
+    root.geometry("275x200")
 
+    lines = [
+        (f"Location: {lat:#.5g}\N{DEGREE SIGN}N {lng:#.5g}\N{DEGREE SIGN}W.", "w"),
+        (f"Today's day length and temperature:", "w"),
+        (f"{hToday}h {mToday}m {sToday}s, at {tempNow}\N{DEGREE SIGN}C", ""),
+        (f"Which is:", "w"),
+        (f"{yDiffM}m {yDiffS}s", ""),
+        (f" {yDiff} than yesterday, and", "w"),
+        (f"{tDiffM}m {tDiffS}s",""),
+        (f" {tDiff} than tomorrow.", "w")
+    ]
+    for row, (text, sticky) in enumerate(lines):
+        lbl = Label(root, text=text, font=("Arial", 13))
+        lbl.grid(column=0, row=row, sticky=sticky)
 
-    lbl0 = Label(root, text = f"Location: {lat}\N{DEGREE SIGN}N {lng}\N{DEGREE SIGN}W.")
-    lbl0.grid(column=0, row=0, sticky="w")
-    lbl1 = Label(root, text = f"Today's day length:")
-    lbl1.grid(column=0, row=1, sticky="w")
-    lbl2 = Label(root, text = f"{hToday}h {mToday}m {sToday}s", )
-    lbl2.grid(column=0, row=2)
-    lbl3 = Label(root, text = "Which is:",justify="left")
-    lbl3.grid(column=0, row=3, sticky="w")
-    lbl4 = Label(root, text = f"{yDiffM}m {yDiffS}s")
-    lbl4.grid(column=0, row=4)
-    lbl5 = Label(root, text = f" {yDiff} than yesterday, and")
-    lbl5.grid(column=0, row=5, sticky="w")
-    lbl6 = Label(root, text = f"{tDiffM}m {tDiffS}s")
-    lbl6.grid(column=0, row=6)
-    lbl7 = Label(root, text = f" {tDiff} than tomorrow.")
-    lbl7.grid(column=0, row=7, sticky="w")
     root.mainloop()
     
 
