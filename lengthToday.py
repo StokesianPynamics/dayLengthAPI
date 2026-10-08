@@ -39,6 +39,10 @@ def main():
         EorW = "E"
     else:
         EorW = "W"
+    if lat >= 0:
+        NorS = "N"
+    else:
+        NorS = "S"
 
     tempNow = getTemp(lat,lng)
 
@@ -81,7 +85,7 @@ def main():
     root.geometry("275x200")
 
     lines = [
-        (f"Location: {lat:#.5g}\N{DEGREE SIGN}N {lng:#.5g}\N{DEGREE SIGN}{EorW}.", "w"),
+        (f"Location: {abs(lat):#.5g}\N{DEGREE SIGN}{NorS} {abs(lng):#.5g}\N{DEGREE SIGN}{EorW}.", "w"),
         (f"Today's day length and temperature:", "w"),
         (f"{hToday}h {mToday}m {sToday}s, at {tempNow}\N{DEGREE SIGN}C", ""),
         (f"Which is:", "w"),
