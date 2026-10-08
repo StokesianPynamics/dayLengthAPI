@@ -22,6 +22,7 @@ def getDate(lat, lng, dateStr):
 def getTemp(lat, lng):
     url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lng}&current=temperature_2m"
     dataTemp = requests.get(url)
+    dataTemp.raise_for_status()
     jsonTemp = dataTemp.json()
     return jsonTemp["current"]["temperature_2m"]
 
@@ -34,6 +35,10 @@ def convertSecToHHMMSS(secs):
 def main():
     #lat, lng = 52.6446, 1.34646
     lat, lng = 51.2837,0
+    if lng > 0:
+        EorW = "E"
+    else:
+        EorW = "W"
 
     tempNow = getTemp(lat,lng)
 
@@ -76,7 +81,7 @@ def main():
     root.geometry("275x200")
 
     lines = [
-        (f"Location: {lat:#.5g}\N{DEGREE SIGN}N {lng:#.5g}\N{DEGREE SIGN}W.", "w"),
+        (f"Location: {lat:#.5g}\N{DEGREE SIGN}N {lng:#.5g}\N{DEGREE SIGN}{EorW}.", "w"),
         (f"Today's day length and temperature:", "w"),
         (f"{hToday}h {mToday}m {sToday}s, at {tempNow}\N{DEGREE SIGN}C", ""),
         (f"Which is:", "w"),
